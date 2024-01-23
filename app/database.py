@@ -1,11 +1,19 @@
+from sqlalchemy import NullPool
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from app.config import settings
 
+
+if settings.MODE == 'TEST':
+    DATABASE_URL = settings.TEST_DATABASE_URL
+    DATABASE_PARAMS = {'poolclass':NullPool}
+else:
+    DATABASE_URL = settings.DATABASE_URL
+    DATABASE_PARAMS = {}
 # Create an instance of SQLAlchemy's AsyncEngine that will interface with the database.
 # The engine is created with the database URL from the application settings.
-engine = create_async_engine(settings.DATABASE_URL)
+engine = create_async_engine(DATABASE_URL,**DATABASE_PARAMS)
 
 # Create an instance of SQLAlchemy's AsyncSessionmaker.
 # This will be used to create new Session objects which are the handle to the database.

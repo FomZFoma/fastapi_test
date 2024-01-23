@@ -1,0 +1,51 @@
+[
+    {
+      "id": 1,
+      "text": "Hot bebra",
+      "date": "2024-01-23T13:48:49.679908",
+      "author_id": 1,
+      "rating": 2,
+      "rating_id": 1
+    },
+    {
+      "id": 2,
+      "text": "asdf",
+      "date": "2024-01-23T14:04:18.007081",
+      "author_id": 1,
+      "rating": 0,
+      "rating_id": 0
+    },
+    {
+      "id": 3,
+      "text": "Привет, мир",
+      "date": "2024-01-24T10:15:30.000000",
+      "author_id": 2,
+      "rating": 5,
+      "rating_id": 2
+    },
+    {
+      "id": 4,
+      "text": "Добро пожаловать в tripster",
+      "date": "2024-01-25T16:45:00.000000",
+      "author_id": 2,
+      "rating": 4,
+      "rating_id": 3
+    },
+    {
+      "id": 5,
+      "text": "Это тестовые данные",
+      "date": "2024-01-26T09:30:45.000000",
+      "author_id": 1,
+      "rating": 3,
+      "rating_id": 4
+    },
+    {
+      "id": 6,
+      "text": "Последняя запись",
+      "date": "2024-01-27T20:20:20.000000",
+      "author_id": 2,
+      "rating": 1,
+      "rating_id": 5
+    }
+  ]
+  

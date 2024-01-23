@@ -34,7 +34,7 @@ async def register_user(user_data: SUserAuth):
     await UsersDAO.add(email = user_data.email,password = hashed_password)
     return 'Registration completed successfully <3'
 
-@router.post('login')
+@router.post('/login')
 async def login_user(response:Response,user_data:SUserAuth):
     user = await authenticate_user(user_data.email,user_data.password)
     if not user:

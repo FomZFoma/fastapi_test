@@ -43,3 +43,6 @@ class PostsDAO(BaseDAO):
             query = update(cls.model).values(**data)
             await session.execute(query)
             await session.commit()
+
+
+        
