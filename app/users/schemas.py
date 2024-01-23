@@ -1,5 +1,8 @@
-from pydantic import BaseModel,EmailStr
+from pydantic import BaseModel, EmailStr
 
 class SUserAuth(BaseModel):
-    email:EmailStr
-    password:str
+    """
+    Schema for user authentication.
+    """
+    email: EmailStr
+    password: str

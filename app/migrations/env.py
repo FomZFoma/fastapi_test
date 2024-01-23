@@ -7,7 +7,7 @@ from app.database import Base
 from alembic import context
 from app.config import settings
 from app.users.models import Users
-from app.votes.models import Votes
+
 from app.posts.models import Posts
 
 sys.path.insert(0,dirname(dirname(dirname(abspath(__file__)))))
