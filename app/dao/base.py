@@ -4,12 +4,17 @@ from app.database import async_session_maker
 class BaseDAO:
     """
     Base Data Access Object class for interacting with the database.
+
+    This class provides common methods for querying, adding, and deleting records from the database.
+
+    Attributes:
+        model: The SQLAlchemy model associated with the DAO.
     """
 
     model = None
 
     @classmethod
-    async def find_one_or_none(cls,**filter_by):
+    async def find_one_or_none(cls, **filter_by):
         """
         Find a single record from the database based on the given filter criteria.
 
@@ -23,9 +28,9 @@ class BaseDAO:
             query = select(cls.model).filter_by(**filter_by)
             result = await session.execute(query)
             return result.scalar_one_or_none()
-        
+
     @classmethod
-    async def add(cls,**data):
+    async def add(cls, **data):
         """
         Add a new record to the database.
 
@@ -41,7 +46,16 @@ class BaseDAO:
             await session.commit()
 
     @classmethod
-    async def delete(cls,**filter_by):
+    async def delete(cls, **filter_by):
+        """
+        Delete records from the database based on the given filter criteria.
+
+        Args:
+            **filter_by: Keyword arguments representing the filter criteria.
+
+        Returns:
+            None
+        """
         async with async_session_maker() as session:
             query = delete(cls.model).filter_by(**filter_by)
             await session.execute(query)
