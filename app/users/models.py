@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String
+
 from app.database import Base
+
 
 class Users(Base):
     """
@@ -12,9 +14,9 @@ class Users(Base):
         email (String): The email address of the user. This field is required and must be unique.
         password (String): The password for the user. This field is required.
     """
-    
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
-    email = Column(String,nullable=False,unique=True)
-    password = Column(String,nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)

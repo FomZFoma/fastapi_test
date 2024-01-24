@@ -1,6 +1,7 @@
-from app.database import Base
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
+
+from app.database import Base
 
 
 class Posts(Base):
@@ -17,12 +18,13 @@ class Posts(Base):
         author (Users): The user who created the post.
 
     """
-    __tablename__ = 'posts'
+
+    __tablename__ = "posts"
     id = Column(Integer, primary_key=True)
     text = Column(String, nullable=False)
     date = Column(DateTime())
-    author_id = Column(Integer, ForeignKey('users.id'))
+    author_id = Column(Integer, ForeignKey("users.id"))
     rating = Column(Integer, default=0)
-    rating_id = Column(Integer,default=0)
+    rating_id = Column(Integer, default=0)
 
-    author = relationship('Users', backref='posts')
+    author = relationship("Users", backref="posts")

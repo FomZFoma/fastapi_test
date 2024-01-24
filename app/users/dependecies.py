@@ -1,9 +1,7 @@
-from jose import jwt
-
 from fastapi import Depends, HTTPException, Request
-from app.config import settings
-from jose import ExpiredSignatureError, JWTError
+from jose import ExpiredSignatureError, JWTError, jwt
 
+from app.config import settings
 from app.users.dao import UsersDAO
 
 
@@ -20,7 +18,7 @@ def get_token(request: Request):
     Raises:
         JWTError: If the access token is not found in the request cookies.
     """
-    token = request.cookies.get('You_have_access_token')
+    token = request.cookies.get("You_have_access_token")
     if not token:
         raise JWTError
 
@@ -41,15 +39,13 @@ async def get_current_user(token: str = Depends(get_token)):
         HTTPException: If the access token is expired or invalid, or if the user cannot be found.
     """
     try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, settings.ALGORITHM
-        )
+        payload = jwt.decode(token, settings.SECRET_KEY, settings.ALGORITHM)
     except ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
     except JWTError:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
-    user_id: str = payload.get('sub')
+    user_id: str = payload.get("sub")
     if not user_id:
         raise HTTPException(status_code=401, detail="Could not validate credentials")
 
