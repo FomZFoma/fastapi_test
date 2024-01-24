@@ -25,6 +25,6 @@ class Posts(Base):
     date = Column(DateTime())
     author_id = Column(Integer, ForeignKey("users.id"))
     rating = Column(Integer, default=0)
-    rating_id = Column(Integer, default=0)
+
 
     author = relationship("Users", backref="posts")

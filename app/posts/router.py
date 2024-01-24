@@ -1,9 +1,11 @@
 from datetime import datetime
-
 from fastapi import APIRouter, Depends, HTTPException
-
 from app.posts.dao import PostsDAO
+
+
 from app.users.dependecies import get_current_user
+from app.votes.dao import VotesDAO
+
 
 router = APIRouter(
     prefix="/posts",
@@ -50,12 +52,15 @@ async def plus_vote(id_post, current_user=Depends(get_current_user)):
         id_post: The ID of the post.
         current_user: The current authenticated user.
     """
+    response = await VotesDAO.find_one_or_none(post_id=int(id_post),user_id = int(current_user.id),like = True)
+    if response: 
+        raise HTTPException(status_code=401, detail="You already voted") 
     await PostsDAO.update(
         id=int(id_post),
         rating=PostsDAO.model.rating + 1,
-        rating_id=int(current_user.id),
-    )
-
+    )   
+    await VotesDAO.add(post_id=int(id_post),user_id = int(current_user.id),like = True)
+    await VotesDAO.delete(post_id=int(id_post),user_id = int(current_user.id),like = False)
 
 @router.patch("minus_vote")
 async def minus_vote(id_post, current_user=Depends(get_current_user)):
@@ -66,8 +71,12 @@ async def minus_vote(id_post, current_user=Depends(get_current_user)):
         id_post: The ID of the post.
         current_user: The current authenticated user.
     """
+    response = await VotesDAO.find_one_or_none(post_id=int(id_post),user_id = int(current_user.id),like = False)
+    if response:
+        raise HTTPException(status_code=401, detail="You already voted")
     await PostsDAO.update(
         id=int(id_post),
         rating=PostsDAO.model.rating - 1,
-        rating_id=int(current_user.id),
     )
+    await VotesDAO.add(post_id=int(id_post),user_id = int(current_user.id),like = False)
+    await VotesDAO.delete(post_id=int(id_post),user_id = int(current_user.id),like = True)
