@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from app.posts.dao import PostsDAO
 
 
@@ -11,23 +11,7 @@ router = APIRouter(
     tags=["Посты"],
 )
 
-@router.post('/')
-async def create_post(post_text: str, current_user=Depends(get_current_user)):
-    """
-    Create a new post.
 
-    Args:
-        post_text (str): The text content of the post.
-        current_user: The current authenticated user.
-
-    Returns:
-        str: A success message if the post is created successfully, or an error message if the user is not logged in.
-    """
-    if not current_user:
-        return "You need to login to the website"
-    
-    await PostsDAO.add(text=post_text, date=datetime.utcnow(), author_id=current_user.id)
-    return "Post created successfully"
 
 async def create_post(post_text: str,current_user = Depends(get_current_user)):
     """
@@ -40,7 +24,7 @@ async def create_post(post_text: str,current_user = Depends(get_current_user)):
     Returns:
         str: A success message if the post is created successfully, or an error message if the user is not logged in.
     """
-    if not current_user: return "You need login at the wepsite"
+    if not current_user: raise HTTPException(status_code = 401, detail = "You need to login to the website")
     await PostsDAO.add(text = post_text,date = datetime.utcnow(),author_id = current_user.id)
     return "Post created successfully"
 
