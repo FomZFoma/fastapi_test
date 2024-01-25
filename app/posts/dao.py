@@ -1,4 +1,4 @@
-from sqlalchemy import desc, insert, select, update
+from sqlalchemy import desc, select, update
 
 from app.dao.base import BaseDAO
 from app.database import async_session_maker
