@@ -18,7 +18,7 @@ class PostsDAO(BaseDAO):
         Find all posts.
 
         Returns:
-            A list of all posts.
+            A list of the most liked and fresh posts.
         """
         async with async_session_maker() as session:
             data = cls.model

@@ -11,7 +11,7 @@ router = APIRouter(
 
 
 @router.post("/register")
-async def register_user(user_data: SUserAuth):
+async def register_user(user_data: SUserAuth) -> dict:
     """
     Register a new user.
 
@@ -33,7 +33,20 @@ async def register_user(user_data: SUserAuth):
 
 
 @router.post("/login")
-async def login_user(response: Response, user_data: SUserAuth):
+async def login_user(response: Response, user_data: SUserAuth) -> dict:
+    """
+    Authenticates the user with the provided email and password.
+
+    Args:
+        response (Response): The response object.
+        user_data (SUserAuth): The user authentication data.
+
+    Returns:
+        dict: A dictionary containing the message "Login successful".
+
+    Raises:
+        HTTPException: If the email or password is incorrect.
+    """
     user = await authenticate_user(user_data.email, user_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")

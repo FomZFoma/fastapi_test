@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -12,7 +13,7 @@ router = APIRouter(
 )
 
 
-async def create_post(post_text: str, current_user=Depends(get_current_user)):
+async def create_post(post_text: str, current_user=Depends(get_current_user)) -> dict:
     """
     Create a new post.
 
@@ -28,7 +29,7 @@ async def create_post(post_text: str, current_user=Depends(get_current_user)):
     await PostsDAO.add(
         text=post_text, date=datetime.utcnow(), author_id=current_user.id
     )
-    return "Post created successfully"
+    return {"message": "Post created successfully"}
 
 
 @router.get("/")
@@ -43,7 +44,7 @@ async def read_top_posts():
 
 
 @router.patch("plus_vote")
-async def plus_vote(id_post, current_user=Depends(get_current_user)):
+async def plus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
     """
     Increase the rating of a post by 1.
 
@@ -55,7 +56,7 @@ async def plus_vote(id_post, current_user=Depends(get_current_user)):
         post_id=int(id_post), user_id=int(current_user.id), like=True
     )
     if response_true:
-        raise HTTPException(status_code=401, detail="You already voted to like")
+        raise HTTPException(status_code=404, detail="You already voted to like")
     response_false = await VotesDAO.find_one_or_none(
         post_id=int(id_post), user_id=int(current_user.id), like=False
     )
@@ -82,7 +83,7 @@ async def plus_vote(id_post, current_user=Depends(get_current_user)):
 
 
 @router.patch("minus_vote")
-async def minus_vote(id_post, current_user=Depends(get_current_user)):
+async def minus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
     """
     Decrease the rating of a post by 1.
 
@@ -94,7 +95,7 @@ async def minus_vote(id_post, current_user=Depends(get_current_user)):
         post_id=int(id_post), user_id=int(current_user.id), like=False
     )
     if response_false:
-        raise HTTPException(status_code=401, detail="You already voted to dislike")
+        raise HTTPException(status_code=404, detail="You already voted to dislike")
     response_true = await VotesDAO.find_one_or_none(
         post_id=int(id_post), user_id=int(current_user.id), like=True
     )
