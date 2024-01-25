@@ -11,6 +11,7 @@ router = APIRouter(
     tags=["Посты"],
 )
 
+
 @router.post("/create_post")
 async def create_post(post_text: str, current_user=Depends(get_current_user)) -> dict:
     """
@@ -50,6 +51,11 @@ async def plus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
     Args:
         id_post: The ID of the post.
         current_user: The current authenticated user.
+    Logic:
+        1. If the user has already voted to like, then raise an error.
+        2. If the user has already voted to dislike, then delete the dislike vote and increase the rating by 2.
+        (because if post was disliked, then it's rating was decreased by 1, so we need to increase it by 2)
+        3. If the user has not voted yet, then increase the rating by 1.
     """
     response_true = await VotesDAO.find_one_or_none(
         post_id=int(id_post), user_id=int(current_user.id), like=True
@@ -89,6 +95,10 @@ async def minus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
     Args:
         id_post: The ID of the post.
         current_user: The current authenticated user.
+    Logic:
+        1. If the user has already voted to dislike, then raise an error.
+        2. If the user has already voted to like, then delete the like vote and decrease the rating by 2.
+        (because if post was liked, then it's rating was increased by 1, so we need to decrease it by 2)
     """
     response_false = await VotesDAO.find_one_or_none(
         post_id=int(id_post), user_id=int(current_user.id), like=False
