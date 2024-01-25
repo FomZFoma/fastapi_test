@@ -12,7 +12,7 @@ router = APIRouter(
     tags=["Посты"],
 )
 
-
+@router.post("/create_post")
 async def create_post(post_text: str, current_user=Depends(get_current_user)) -> dict:
     """
     Create a new post.
@@ -27,7 +27,7 @@ async def create_post(post_text: str, current_user=Depends(get_current_user)) ->
     if not current_user:
         raise HTTPException(status_code=401, detail="You need to login to the website")
     await PostsDAO.add(
-        text=post_text, date=datetime.utcnow(), author_id=current_user.id
+        text=post_text, date=datetime.utcnow(), author_id=int(current_user.id)
     )
     return {"message": "Post created successfully"}
 

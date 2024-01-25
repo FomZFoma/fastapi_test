@@ -48,18 +48,3 @@ class PostsDAO(BaseDAO):
             await session.execute(query)
             await session.commit()
 
-    @classmethod
-    async def add(cls, id, **data):
-        """
-        Add a new record to the database.
-
-        Args:
-            **data: Keyword arguments representing the data to be added.
-
-        Returns:
-            None
-        """
-        async with async_session_maker() as session:
-            query = insert(cls.model).values(**data).where(id=id)
-            await session.execute(query)
-            await session.commit()
