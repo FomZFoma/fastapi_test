@@ -9,5 +9,4 @@ app.include_router(posts_router)
 
 """
 This is the main module of the FastAPI application.
-It sets up the FastAPI app and includes the users router.
 """

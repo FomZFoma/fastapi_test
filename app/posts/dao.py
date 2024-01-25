@@ -24,14 +24,16 @@ class PostsDAO(BaseDAO):
             data = cls.model
             query = (
                 select(data)
-                .order_by(desc(data.rating), desc(data.date))  #update, now we find the most high rating, and after that the most new
+                .order_by(
+                    desc(data.rating), desc(data.date)
+                )  # update, now we find the most high rating, and after that the most new
                 .limit(10)
             )
             result = await session.execute(query)
             return result.scalars().all()
 
     @classmethod
-    async def update(cls, id,**data):
+    async def update(cls, id, **data):
         """
         Update the model with the given data.
 
@@ -45,9 +47,9 @@ class PostsDAO(BaseDAO):
             query = update(cls.model).where(cls.model.id == id).values(**data)
             await session.execute(query)
             await session.commit()
-    
+
     @classmethod
-    async def add(cls,id, **data):
+    async def add(cls, id, **data):
         """
         Add a new record to the database.
 

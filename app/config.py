@@ -4,23 +4,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    """
-    The Settings class holds the configuration settings for the application.
-
-    Each attribute of this class represents a configuration setting.
-
-    Attributes:
-        DB_HOST (str): The database host address.
-        DB_PORT (int): The port number on which the database is listening.
-        DB_USER (str): The username to connect to the database.
-        DB_PASS (str): The password to connect to the database.
-        DB_NAME (str): The name of the database.
-        SECRET_KEY (str): The secret key used for JWT encoding and decoding.
-        ALGORITHM (str): The algorithm used for JWT encoding and decoding.
-
-    Properties:
-        DATABASE_URL (str): The complete database URL constructed using the DB_HOST, DB_PORT, DB_USER, DB_PASS, and DB_NAME.
-    """
+    """The Settings class holds the configuration settings for the application."""
 
     MODE: Literal["DEV", "PROD", "TEST"]
     DB_HOST: str

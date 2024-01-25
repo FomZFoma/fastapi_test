@@ -29,7 +29,7 @@ async def register_user(user_data: SUserAuth):
         raise HTTPException(status_code=400, detail="User already exists")
     hashed_password = get_password_hash(user_data.password)
     await UsersDAO.add(email=user_data.email, password=hashed_password)
-    return "Registration completed successfully <3"
+    return {"message": "User created successfully"}
 
 
 @router.post("/login")
@@ -39,4 +39,4 @@ async def login_user(response: Response, user_data: SUserAuth):
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     access_token = create_access_token({"sub": str(user.id)})
     response.set_cookie("You_have_access_token", access_token, httponly=True)
-    return "Login completed successfully <3"
+    return {"message": "Login successful"}
