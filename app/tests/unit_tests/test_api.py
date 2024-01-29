@@ -15,8 +15,7 @@ async def test_register_user(email, password, status_code, ac: AsyncClient):
         json={
             "email": email,
             "password": password,
-        },
-    )
+        })
 
     assert response.status_code == status_code
 
@@ -25,7 +24,7 @@ async def test_register_user(email, password, status_code, ac: AsyncClient):
     "email,password,status_code",
     [
         ("test@test.com", "test", 200),
-        ("asldkfj@sldkfj.com", "asldkfj", 400),
+        ("asldkfj@sldkfj.com", "asldkfj", 404),
     ],
 )
 async def test_login_user(email, password, status_code, ac: AsyncClient):

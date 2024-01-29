@@ -5,7 +5,7 @@ from app.users.dao import UsersDAO
 from app.users.schemas import SUserAuth
 
 router = APIRouter(
-    prefix="/users",
+    prefix="/auth",
     tags=["Пользователи"],
 )
 

@@ -22,8 +22,3 @@ class Base(DeclarativeBase):
 
     pass
 
-
-class Base(DeclarativeBase):
-    """The Base class is the base class for all SQLAlchemy models in this application."""
-
-    pass
