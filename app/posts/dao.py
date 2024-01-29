@@ -21,11 +21,10 @@ class PostsDAO(BaseDAO):
             A list of the most liked and fresh posts.
         """
         async with async_session_maker() as session:
-            data = cls.model
             query = (
-                select(data)
+                select(Posts)
                 .order_by(
-                    desc(data.rating), desc(data.date)
+                    desc(Posts.rating), desc(Posts.date)
                 )  # update, now we find the most high rating, and after that the most new
                 .limit(10)
             )

@@ -1,9 +1,13 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import parse_obj_as
 
 from app.posts.dao import PostsDAO
+from app.tasks.tasks import send_post_confimation_email
 from app.users.dependecies import get_current_user
+from app.users.models import Users
+from app.users.schemas import SUserAuth
 from app.votes.dao import VotesDAO
 from app.posts.dependecies import get_response, change_rating, create_vote
 
@@ -15,7 +19,7 @@ router = APIRouter(
 
 
 @router.post("/create_post")
-async def create_post(post_text: str, current_user=Depends(get_current_user)) -> dict:
+async def create_post(post_text: str, current_user=Depends(get_current_user))->dict:
     """
     Create a new post.
 
@@ -26,13 +30,11 @@ async def create_post(post_text: str, current_user=Depends(get_current_user)) ->
     Returns:
         str: A success message if the post is created successfully, or an error message if the user is not logged in.
     """
-    if not current_user:
-        raise HTTPException(status_code=401, detail="You need to login to the website")
     await PostsDAO.add(
         text=post_text, date=datetime.utcnow(), author_id=int(current_user.id)
     )
+    send_post_confimation_email.delay(post_text,'zaychukfoma2@gmail.com')
     return {"message": "Post created successfully"}
-
 
 @router.get("/")
 async def read_top_posts():

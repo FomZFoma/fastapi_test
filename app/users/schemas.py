@@ -8,3 +8,6 @@ class SUserAuth(BaseModel):
 
     email: EmailStr
     password: str
+
+    class Config:
+        orm_mode = True
