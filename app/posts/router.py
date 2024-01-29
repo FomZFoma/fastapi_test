@@ -5,10 +5,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.posts.dao import PostsDAO
 from app.users.dependecies import get_current_user
 from app.votes.dao import VotesDAO
+from app.posts.dependecies import get_response, change_rating, create_vote
 
 router = APIRouter(
     prefix="/posts",
     tags=["Посты"],
+    
 )
 
 
@@ -57,33 +59,15 @@ async def plus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
         (because if post was disliked, then it's rating was decreased by 1, so we need to increase it by 2)
         3. If the user has not voted yet, then increase the rating by 1.
     """
-    response_true = await VotesDAO.find_one_or_none(
-        post_id=int(id_post), user_id=int(current_user.id), like=True
-    )
+    response_true = await get_response(id_post, current_user.id, True)
     if response_true:
         raise HTTPException(status_code=404, detail="You already voted to like")
-    response_false = await VotesDAO.find_one_or_none(
-        post_id=int(id_post), user_id=int(current_user.id), like=False
-    )
+    response_false = await get_response(id_post, current_user.id, False)
     if response_false:
-        await PostsDAO.update(id=int(id_post), rating=PostsDAO.model.rating + 2)
-        await VotesDAO.add(
-            post_id=int(id_post), user_id=int(current_user.id), like=True
-        )
-        await VotesDAO.delete(
-            post_id=int(id_post), user_id=int(current_user.id), like=False
-        )
+        await change_rating(id_post, 2, current_user.id, True)
     else:
-        await PostsDAO.update(
-            id=int(id_post),
-            rating=PostsDAO.model.rating + 1,
-        )
-        await VotesDAO.add(
-            post_id=int(id_post), user_id=int(current_user.id), like=True
-        )
-        await VotesDAO.delete(
-            post_id=int(id_post), user_id=int(current_user.id), like=False
-        )
+        await create_vote(id_post, 1, current_user.id, True)
+
     return {"message": "Post rating increased by 1"}
 
 
@@ -100,31 +84,13 @@ async def minus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
         2. If the user has already voted to like, then delete the like vote and decrease the rating by 2.
         (because if post was liked, then it's rating was increased by 1, so we need to decrease it by 2)
     """
-    response_false = await VotesDAO.find_one_or_none(
-        post_id=int(id_post), user_id=int(current_user.id), like=False
-    )
+    response_false = await get_response(id_post, current_user.id, False)
     if response_false:
         raise HTTPException(status_code=404, detail="You already voted to dislike")
-    response_true = await VotesDAO.find_one_or_none(
-        post_id=int(id_post), user_id=int(current_user.id), like=True
-    )
+    response_true = await get_response(id_post, current_user.id, True)
     if response_true:
-        await PostsDAO.update(id=int(id_post), rating=PostsDAO.model.rating - 2)
-        await VotesDAO.add(
-            post_id=int(id_post), user_id=int(current_user.id), like=False
-        )
-        await VotesDAO.delete(
-            post_id=int(id_post), user_id=int(current_user.id), like=True
-        )
+        await change_rating(id_post, 2, current_user.id, False)
     else:
-        await PostsDAO.update(
-            id=int(id_post),
-            rating=PostsDAO.model.rating - 1,
-        )
-        await VotesDAO.add(
-            post_id=int(id_post), user_id=int(current_user.id), like=False
-        )
-        await VotesDAO.delete(
-            post_id=int(id_post), user_id=int(current_user.id), like=True
-        )
+        await create_vote(id_post, 1, current_user.id, False)
+
     return {"message": "Post rating decreased by 1"}
