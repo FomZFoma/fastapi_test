@@ -1,6 +1,4 @@
 import smtplib
-from pathlib import Path
-
 from pydantic import EmailStr
 from app.config import settings
 from app.tasks.celery import celery

@@ -29,6 +29,7 @@ async def register_user(user_data: SUserAuth) -> dict:
         raise HTTPException(status_code=400, detail="User already exists")
     hashed_password = get_password_hash(user_data.password)
     await UsersDAO.add(email=user_data.email, password=hashed_password)
+    return {"message": "Register successful"}
 
     
 
