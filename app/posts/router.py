@@ -4,22 +4,21 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import parse_obj_as
 
 from app.posts.dao import PostsDAO
+from app.posts.models import Posts
 from app.tasks.tasks import send_post_confimation_email
 from app.users.dependecies import get_current_user
 from app.users.models import Users
 from app.users.schemas import SUserAuth
-from app.votes.dao import VotesDAO
 from app.posts.dependecies import get_response, change_rating, create_vote
 
 router = APIRouter(
     prefix="/posts",
     tags=["Посты"],
-    
 )
 
 
 @router.post("/create_post")
-async def create_post(post_text: str, current_user=Depends(get_current_user))->dict:
+async def create_post(post_text: str, current_user=Depends(get_current_user)):# -> dict:
     """
     Create a new post.
 
@@ -33,8 +32,10 @@ async def create_post(post_text: str, current_user=Depends(get_current_user))->d
     await PostsDAO.add(
         text=post_text, date=datetime.utcnow(), author_id=int(current_user.id)
     )
-    send_post_confimation_email.delay(post_text,'zaychukfoma2@gmail.com')
+    post = {"post_text": post_text}
+    send_post_confimation_email.delay(post,current_user.email )
     return {"message": "Post created successfully"}
+
 
 @router.get("/")
 async def read_top_posts():
@@ -47,7 +48,7 @@ async def read_top_posts():
     return await PostsDAO.find_all()
 
 
-@router.patch("plus_vote")
+@router.put("plus_vote")
 async def plus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
     """
     Increase the rating of a post by 1.
@@ -73,7 +74,7 @@ async def plus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
     return {"message": "Post rating increased by 1"}
 
 
-@router.patch("minus_vote")
+@router.put("minus_vote")
 async def minus_vote(id_post, current_user=Depends(get_current_user)) -> dict:
     """
     Decrease the rating of a post by 1.

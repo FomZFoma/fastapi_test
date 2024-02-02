@@ -4,8 +4,14 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    """The Settings class holds the configuration settings for the application."""
 
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not isinstance(cls._instance, cls):
+            cls._instance = super(Settings, cls).__new__(cls, *args, **kwargs)
+        return cls._instance
+    
     MODE: Literal["DEV", "PROD", "TEST"]
     DB_HOST: str
     DB_PORT: int
@@ -34,6 +40,8 @@ class Settings(BaseSettings):
 
     REDIS_HOST: str
     REDIS_PORT: int
+    
+    BROKER_URL: str
 
     SECRET_KEY: str
     ALGORITHM: str

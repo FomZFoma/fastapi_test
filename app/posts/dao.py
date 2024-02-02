@@ -1,8 +1,9 @@
-from sqlalchemy import desc, select, update
+from sqlalchemy import desc, join, select, update
 
 from app.dao.base import BaseDAO
 from app.database import async_session_maker
 from app.posts.models import Posts
+from app.users.models import Users
 
 
 class PostsDAO(BaseDAO):
@@ -46,4 +47,15 @@ class PostsDAO(BaseDAO):
             query = update(cls.model).where(cls.model.id == id).values(**data)
             await session.execute(query)
             await session.commit()
+    
 
+    @classmethod
+
+    async def merge(cls):
+        async with async_session_maker() as session:
+            query_join = join(Posts, Users, Posts.author_id == Users.id) 
+            query = select(Posts,Users).select_from(query_join)
+            result = await session.execute(query)
+            response = result.mappings().all()
+
+            return response[len(response)-1]

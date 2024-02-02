@@ -4,6 +4,6 @@ from app.config import settings
 
 celery = Celery(
     "tasks",
-    broker=f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}",
+    broker=str(settings.BROKER_URL),
     include=["app.tasks.tasks"]
 )

@@ -9,14 +9,15 @@ def create_post_template(
 ):
     email = EmailMessage()
 
-    email['Subject'] = 'ТОП 10-ПОСТОВ'
+    email['Subject'] = 'УСПЕШНЫЙ ВЫХЛОП ПОСТА В СЕТЬ'
     email['From'] = settings.SMTP_USER
     email['To'] = email_to
 
     email.set_content(
         f"""
-            <h1>РЕГИСТРАЦИЯ НА САЙТЕ</h1>
-            Поздравляб  с успешной регистрацией на сайте
+            <h1>СОЗДАНИЕ ПОСТА НА САЙТЕ Habr</h1>
+            Поздравляб  с успешной загрузкой поста  на нашем сайте
+            '{post['post_text']}', ТЫ РЕАЛЬНО КРУТ МУЖИК
     """,
         subtype='html'
     )
